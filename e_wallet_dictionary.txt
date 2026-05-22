@@ -1,0 +1,221 @@
+
+
+===== PAGE 1 =====
+ 
+1.1.
+   
+Bảng  thuyết  minh  quan  hệ  và  thuộc  tính  ·
+   
+ 
+Bảng  TRANSACTIONS  
+STT  Tên  thuộc  tính  Kiểu  dữ  liệu  
+Quan  hệ  Diễn  giải  
+1  transaction_id  bigint  Khóa  chính  Mã  định  danh  giao  dịch.  
+2  type_id  smallint  FK  (trans_types)  
+Loại  giao  dịch  thực  hiện.  
+3  sender_wallet_id  bigint  FK  (wallets)  ID  ví  gửi  tiền  (có  thể  null  nếu  là  nạp  tiền).  
+4  receiver_wallet_id  
+bigint  FK  (wallets)  ID  ví  nhận  tiền  (có  thể  null  nếu  là  rút  tiền).  
+
+
+===== PAGE 2 =====
+5  limit_id  int  FK  (trans_limits)  
+Liên  kết  với  hạn  mức  áp  dụng.  
+6  voucher_id  bigint  FK  (vouchers)  
+Mã  giảm  giá  được  áp  dụng  (nếu  có).  
+7  amount  decimal(18,4)  
+-  Số  tiền  gốc  của  giao  dịch.  
+8  fee_amount  decimal(18,4)  
+-  Số  tiền  phí  thực  tế  đã  thu.  
+9  status  varchar(20)  -  Trạng  thái  (PENDING  /  COMPLETED  /  FAILED...).  
+10  reference_code  varchar(50)  Unique  Mã  đối  soát  duy  nhất  cho  giao  dịch.  
+11  step  int  -  Giờ  thực  hiện  trong  ngày  (phục  vụ  thống  kê).  
+12  created_at  timestamp  -  Thời  gian  tạo  giao  dịch.    
+·
+   
+ 
+Bảng  TRANSACTION_TYPES  
+STT  Tên  thuộc  tính  
+Kiểu  dữ  liệu  Quan  hệ  Diễn  giải  
+1  type_id  smallint  Khóa  chính  Mã  loại  giao  dịch.  
+2  type_code  varchar(20)  Unique  Mã  code  (TOP_UP,  TRANSFER,  PAYMENT...).  
+3  description  varchar(255)  -  Mô  tả  chi  tiết  ý  nghĩa  loại  giao  dịch.      ·
+   
+ 
+Bảng  TRANSACTION_FEES  
+
+===== PAGE 3 =====
+STT  Tên  thuộc  tính  Kiểu  dữ  liệu  Quan  hệ  Diễn  giải  
+1  fee_id  int  Khóa  chính  Mã  định  danh  quy  tắc  phí.  
+2  type_id  smallint  FK  (trans_types)  
+Áp  dụng  phí  cho  loại  giao  dịch  nào.  
+3  fee_rate  decimal(5,4)  -  Tỷ  lệ  phí  theo  phần  trăm  (ví  dụ  0.005  =  0.5%).  
+4  fee_fixed  decimal(18,4)  
+-  Mức  phí  cố  định  cộng  thêm.  
+5  min_fee  decimal(18,4)  
+-  Mức  phí  tối  thiểu  phải  thu.  
+6  max_fee  decimal(18,4)  
+-  Mức  phí  tối  đa  (trần  phí).  
+7  effective_from  date  -  Ngày  bắt  đầu  áp  dụng  mức  phí  này.  
+8  effective_to  date  -  Ngày  kết  thúc  áp  dụng  (nếu  có).    
+·
+   
+ 
+Bảng  TRANSACTION_LIMITS    
+STT  Tên  thuộc  tính  Kiểu  dữ  liệu  
+Quan  hệ  
+Diễn  giải  
+1  limit_id  int  Khóa  chính  
+Mã  định  danh  hạn  mức.  
+2  kyc_level  varchar(20)  -  Cấp  độ  KYC  áp  dụng  (UNVERIFIED  /  VERIFIED).  
+3  max_amount_per_trans  
+decimal(18,4)  
+-  Số  tiền  tối  đa  cho  một  giao  dịch.  
+
+===== PAGE 4 =====
+4  max_amount_per_day  
+decimal(18,4)  
+-  Tổng  số  tiền  tối  đa  trong  một  ngày.  
+5  max_trans_per_day  int  -  Số  lượng  giao  dịch  tối  đa  trong  một  ngày.    ·
+   
+ 
+Bảng  USERS  
+STT  Tên  thuộc  tính  
+Kiểu  dữ  liệu  
+Quan  hệ  Diễn  giải  
+1  user_id  bigint  Khóa  chính  Mã  định  danh  duy  nhất  của  người  dùng.  
+2  full_name  varchar(100)  
+-  Họ  và  tên  đầy  đủ  của  người  dùng.  
+3  email  varchar(150)  
+Unique  Địa  chỉ  email  (duy  nhất)  để  liên  lạc/đăng  nhập.  
+4  phone  varchar(15)  Unique  Số  điện  thoại  (duy  nhất)  của  người  dùng.  
+5  password_hash  
+varchar(255)  
+-  Mật  khẩu  đã  được  mã  hóa.  
+6  kyc_status  varchar(20)  -  Trạng  thái  định  danh  (PENDING  /  VERIFIED  /  REJECTED).  
+7  is_active  boolean  -  Trạng  thái  hoạt  động  của  tài  khoản.  
+8  created_at  timestamp  -  Thời  điểm  tạo  tài  khoản.    
+·
+   
+ 
+Bảng  WALLETS  
+STT  Tên  thuộc  tính  Kiểu  dữ  liệu  Quan  hệ  Diễn  giải  
+1  wallet_id  bigint  Khóa  chính  
+Mã  định  danh  duy  nhất  của  ví.  
+
+===== PAGE 5 =====
+2  user_id  bigint  FK  (users)  Liên  kết  1-1  với  người  dùng.  
+3  balance  decimal(18,4)  -  Số  dư  hiện  có  trong  ví.  
+4  currency  varchar(10)  -  Loại  tiền  tệ  sử  dụng  (mặc  định  VND).  
+5  wallet_status  varchar(20)  -  Trạng  thái  ví  (ACTIVE  /  FROZEN  /  CLOSED).  
+6  created_at  timestamp  -  Thời  điểm  khởi  tạo  ví.  
+7  updated_at  timestamp  -  Thời  điểm  cập  nhật  số  dư  gần  nhất.      ·
+   
+ 
+Bảng  PAYMENT_METHODS  
+STT  Tên  thuộc  tính  
+Kiểu  dữ  liệu  
+Quan  hệ  Diễn  giải  
+1  method_id  bigint  Khóa  chính  
+Mã  phương  thức  thanh  toán.  
+2  user_id  bigint  FK  (users)  Chủ  sở  hữu  phương  thức  thanh  toán.  
+3  method_type  varchar(20)  -  Loại  (BANK_ACCOUNT  /  CREDIT_CARD...).  
+4  provider_name  varchar(100)  
+-  Tên  ngân  hàng  hoặc  tổ  chức  thẻ  (VD:  VCB,  VISA).  
+5  masked_number  
+varchar(20)  -  Số  tài  khoản/thẻ  đã  che  (chỉ  hiện  4  số  cuối).  
+6  is_default  boolean  -  Có  phải  phương  thức  mặc  định  không.  
+
+===== PAGE 6 =====
+7  is_verified  boolean  -  Trạng  thái  đã  xác  thực  với  ngân  hàng  chưa.    
+·
+   
+ 
+Bảng  FRAUD_FLAGS  
+STT  Tên  thuộc  tính  Kiểu  dữ  liệu  Quan  hệ  Diễn  giải  
+1  flag_id  bigint  Khóa  chính  Mã  bản  ghi  cảnh  báo.  
+2  transaction_id  bigint  FK  (transactions)  
+Giao  dịch  bị  nghi  ngờ.  
+3  rule_id  int  FK  (fraud_rules)  
+Quy  tắc  bị  vi  phạm.  
+4  risk_score  decimal(4,2)  -  Điểm  rủi  ro  (từ  0.00  đến  1.00).  
+5  action_taken  varchar(20)  -  Hành  động  thực  tế  đã  thực  hiện.  
+6  is_confirmed  boolean  -  Xác  nhận  có  phải  gian  lận  thật  hay  không.      ·
+   
+ 
+Bảng  FRAUD_RULES  
+STT  Tên  thuộc  tính  
+Kiểu  dữ  liệu  
+Quan  hệ  Diễn  giải  
+1  rule_id  int  Khóa  chính  Mã  quy  tắc.  
+2  rule_name  varchar(100)  -  Tên  quy  tắc  (VD:  Giao  dịch  vượt  mức,  Tần  suất  cao).  
+3  condition_field  varchar(50)  -  Trường  dữ  liệu  kiểm  tra  (amount,  frequency...).  
+
+===== PAGE 7 =====
+4  operator  varchar(10)  -  Toán  tử  so  sánh  (GT,  LT,  GTE,  EQ...).  
+5  threshold_value  
+decimal(18,4)  
+-  Giá  trị  ngưỡng  để  kích  hoạt  quy  tắc.  
+6  action  varchar(20)  -  Hành  động  (FLAG  -  Gắn  cờ,  BLOCK  -  Chặn).    
+·
+   
+ 
+Bảng  FUND_ORDERS    
+STT  Tên  thuộc  tính  Kiểu  dữ  liệu  
+Quan  hệ  Diễn  giải  
+1  order_id  bigint  Khóa  chính  Mã  lệnh  nạp/rút.  
+2  wallet_id  bigint  FK  (wallets)  Ví  thực  hiện  lệnh.  
+3  method_id  bigint  FK  (pay_methods)  
+Phương  thức  thanh  toán  sử  dụng.  
+4  order_type  varchar(20)  -  Loại  lệnh  (TOP_UP  /  WITHDRAW).  
+5  amount  decimal(18,4)  
+-  Số  tiền  thực  hiện.  
+6  status  varchar(20)  -  Trạng  thái  (PENDING  /  SUCCESS  /  FAILED).  
+7  idempotency_key  
+varchar(100)  Unique  Khóa  duy  nhất  để  tránh  nạp  tiền  trùng  lặp.  
+8  gateway_ref  varchar(100)  -  Mã  tham  chiếu  từ  phía  Cổng  thanh  toán.    
+
+===== PAGE 8 =====
+·
+   
+ 
+Bảng  AUDIT_LOGS  
+STT  Tên  thuộc  tính  
+Kiểu  dữ  liệu  
+Quan  hệ  Diễn  giải  
+1  log_id  bigint  Khóa  chính  Mã  nhật  ký.  
+2  transaction_id  bigint  FK  (transactions)  
+Liên  kết  với  giao  dịch  phát  sinh.  
+3  wallet_id  bigint  FK  (wallets)  Ví  bị  biến  động  số  dư.  
+4  action_type  varchar(10)  -  Loại  biến  động  (DEBIT  -  Trừ  tiền,  CREDIT  -  Cộng  tiền).  
+5  balance_before  
+decimal(18,4)  
+-  Số  dư  trước  khi  thực  hiện  giao  dịch.  
+6  balance_after  decimal(18,4)  
+-  Số  dư  sau  khi  thực  hiện  giao  dịch.  
+7  delta  decimal(18,4)  
+-  Số  tiền  thay  đổi  thực  tế.    
+·
+   
+ 
+Bảng  LOGIN_SESSIONS  
+STT  Tên  thuộc  tính  Kiểu  dữ  liệu  Quan  hệ  Diễn  giải  
+1  session_id  bigint  Khóa  chính  
+Mã  phiên  làm  việc.  
+2  user_id  bigint  FK  (users)  
+Người  dùng  sở  hữu  phiên.  
+3  device_info  varchar(255)  -  Thông  tin  thiết  bị  (Trình  duyệt,  Hệ  điều  hành).  
+4  ip_address  varchar(45)  -  Địa  chỉ  IP  đăng  nhập.  
+5  is_active  boolean  -  Phiên  còn  hiệu  lực  hay  không.    
+
+===== PAGE 9 =====
+  ·
+   
+ 
+Bảng  VOUCHERS  
+STT  Tên  thuộc  tính  Kiểu  dữ  liệu  Quan  hệ  Diễn  giải  
+1  voucher_id  bigint  Khóa  chính  Mã  định  danh  voucher.  
+2  code  varchar(20)  Unique  Mã  code  khách  hàng  nhập  (VD:  GIAM20K).  
+3  discount_type  varchar(20)  -  Loại  giảm  giá  (FIXED  -  Số  tiền,  PERCENTAGE  -  %).  
+4  discount_value  decimal(18,4)  -  Giá  trị  giảm  giá.  
+5  valid_until  timestamp  -  Thời  hạn  sử  dụng  mã.   

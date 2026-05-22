@@ -1,0 +1,55 @@
+
+
+===== PAGE 1 =====
+ Table  Columns  Defination  
+Milestones  MilestoneID  Mã  duy  nhất  của  Milestone  
+ProjectID  Mã  dự  án  
+MilestoneName  Tên  Milstone  
+PlannedCompletionDate  Ngày  hoàn  thành  dự  kiến  
+ActualCompletionDate  Ngày  hoàn  thành  thực  tế  
+Status  Trạng  thái  (Completed/Delayed/On  Track)  
+Projects  ProjectID  Mã  duy  nhất  của  dự  án  
+ProductName  Tên  sản  phẩm  
+DepartmentID  Mã  phòng  ban  
+ProjectManagerID  Mã  người  quản  lý  
+City  Thành  phố  
+Project_Country_Latitude  
+  
+Project_Country_Longitude  
+  
+PlannedStartDate  Ngày  dự  kiến  bắt  đầu  
+PlannedEndDate  Ngày  dự  kiến  hoàn  thành  
+ActualStartDate  Ngày  bắt  đầu  thực  tế  
+ActualEndDate  Ngày  hoàn  thành  thực  tế  
+Status  Trạng  thái  dự  án  (Completed/Delayed/In  Progress/Not  Started)  
+PlannedBudget_EUR  Ngân  sách  dự  kiến  
+ActualBudget_EUR  Ngân  sách  thực  tế  
+RiskLevel  Mức  độ  rủi  ro  
+CompletionPercentage  Độ  hoàn  thành  (1-100)  
+Project_Country    
+
+===== PAGE 2 =====
+Employees  EmployeeID  Mã  nhân  viên  
+FullName  Tên  nhân  viên  
+DepartmentID  Mã  phòng  ban  
+Role  Vị  trí  
+ExperienceLevel  Kinh  nghiệm  (Mid/Junior/Senior)  
+Country    
+City    
+Employee_Country_Latitude  
+  
+Employee_Country_Longitude  
+  
+HourlyRate_EURperhour  Tiền  kiếm  được  theo  giờ  
+Departments  Department_ID  Mã  phòng  ban  
+Department_Name  Tên  phòng  ban  
+Head_Of_Department  Trưởng  phòng  
+Tasks  TaskID  Mã  nhiệm  vụ  
+ProjectID  Mã  dự  án  
+AssignedTo  (EmployeeID)  
+Người  đảm  nhận  
+TaskName  Tên  nhiệm  vụ  
+PlannedHours  Giờ  hoàn  thành  dự  kiến  
+ActualHours  Giờ  thực  tế  
+TaskStatus  Trạng  thái  công  việc  (Not  Started/In  Progress/Completed)  
+Priority  Mức  độ  ưu  tiên  (Low/Medium/High)   
