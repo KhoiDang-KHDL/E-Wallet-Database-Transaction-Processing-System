@@ -203,3 +203,320 @@ BEGIN
     END IF;
 END;
 /
+    
+--Ràng buộc 31: Tổng tiền giao dịch thực tế không được âm.  
+CREATE OR REPLACE TRIGGER trg_total_not_negative
+BEFORE INSERT OR UPDATE OF amount, fee_amount ON transactions
+FOR EACH ROW
+BEGIN
+    IF (:NEW.amount + :NEW.fee_amount) < 0 THEN
+        RAISE_APPLICATION_ERROR(
+            -20031,
+            'Tổng tiên giao dịch(amount + fee_amount = '
+            || TO_CHAR(:NEW.amount + :NEW.fee_amount)
+            || ') không được âm nha bạn.'
+        );
+    END IF;
+END;
+/
+
+--Ràng buộc 32: Thuộc tính phone trong bảng USERS là duy nhất.
+CREATE OR REPLACE TRIGGER trg_phone_unique
+BEFORE INSERT OR UPDATE OF phone ON users
+FOR EACH ROW
+DECLARE
+    v_count NUMBER;
+BEGIN
+    IF :NEW.phone IS NOT NULL THEN
+        IF INSERTING THEN
+            SELECT COUNT(*)
+              INTO v_count
+              FROM users
+             WHERE phone = :NEW.phone;
+        ELSE  -- UPDATING
+            SELECT COUNT(*)
+              INTO v_count
+              FROM users
+             WHERE phone    = :NEW.phone
+               AND user_id <> :OLD.user_id;
+        END IF;
+ 
+        IF v_count > 0 THEN
+            RAISE_APPLICATION_ERROR(
+                -20032,
+                'Số điện thoại "' || :NEW.phone
+                || '" đã tồn tại trong hệ thống nha bạn.'
+            );
+        END IF;
+    END IF;
+END;
+/
+
+--Ràng buộc 33: fee_rate nằm trong khoảng [0; 1].
+CREATE OR REPLACE TRIGGER trg_fee_rate_range
+BEFORE INSERT OR UPDATE OF fee_rate ON transaction_fees
+FOR EACH ROW
+BEGIN
+    IF :NEW.fee_rate < 0 OR :NEW.fee_rate > 1 THEN
+        RAISE_APPLICATION_ERROR(
+            -20033,
+            'fee_rate = ' || TO_CHAR(:NEW.fee_rate)
+            || ' phải nằm trong khoảng [0, 1].'
+        );
+    END IF;
+END;
+/
+
+--Ràng buộc 34: Các giá trị phí trong TRANSACTION_FEES không được âm.
+CREATE OR REPLACE TRIGGER trg_fee_not_negative
+BEFORE INSERT OR UPDATE OF fee_rate, fee_fixed, min_fee, max_fee
+    ON transaction_fees
+FOR EACH ROW
+BEGIN
+    IF :NEW.fee_rate < 0 THEN
+        RAISE_APPLICATION_ERROR(
+            -20034,
+            'fee_rate = ' || TO_CHAR(:NEW.fee_rate)
+            || ' không được âm nha bạn.'
+        );
+    END IF;
+ 
+    IF :NEW.fee_fixed < 0 THEN
+        RAISE_APPLICATION_ERROR(
+            -20034,
+            'fee_fixed = ' || TO_CHAR(:NEW.fee_fixed)
+            || ' không được âm nha bạn.'
+        );
+    END IF;
+ 
+    IF :NEW.min_fee < 0 THEN
+        RAISE_APPLICATION_ERROR(
+            -20034,
+            'min_fee = ' || TO_CHAR(:NEW.min_fee)
+            || ' không được âm nha bạn.'
+        );
+    END IF;
+ 
+    IF :NEW.max_fee IS NOT NULL AND :NEW.max_fee < 0 THEN
+        RAISE_APPLICATION_ERROR(
+            -20034,
+            'max_fee = ' || TO_CHAR(:NEW.max_fee)
+            || ' không được âm nha bạn.'
+        );
+    END IF;
+END;
+/
+
+--Ràng buộc 35: Hạn mức giao dịch phải là số dương. 
+CREATE OR REPLACE TRIGGER trg_limit_positive
+BEFORE INSERT OR UPDATE OF max_amount_per_trans, max_amount_per_day,
+    max_trans_per_day ON transaction_limits
+FOR EACH ROW
+BEGIN
+    IF :NEW.max_amount_per_trans <= 0 THEN
+        RAISE_APPLICATION_ERROR(
+            -20035,
+            'max_amount_per_trans = '
+            || TO_CHAR(:NEW.max_amount_per_trans)
+            || ' phải lớn hơn 0 nha bạn.'
+        );
+    END IF;
+ 
+    IF :NEW.max_amount_per_day <= 0 THEN
+        RAISE_APPLICATION_ERROR(
+            -20035,
+            'max_amount_per_day = '
+            || TO_CHAR(:NEW.max_amount_per_day)
+            || ' phải lớn hơn 0 nha bạn.'
+        );
+    END IF;
+ 
+    IF :NEW.max_trans_per_day <= 0 THEN
+        RAISE_APPLICATION_ERROR(
+            -20035,
+            'max_trans_per_day = '
+            || TO_CHAR(:NEW.max_trans_per_day)
+            || ' phải lớn hơn 0 nha bạn.'
+        );
+    END IF;
+END;
+/
+
+--Ràng buộc 36: Hạn mức mỗi giao dịch không vượt quá hạn mức mỗi ngày. 
+CREATE OR REPLACE TRIGGER trg_limit_not_exceed_limit_per_day
+BEFORE INSERT OR UPDATE OF max_amount_per_trans, max_amount_per_day
+    ON transaction_limits
+FOR EACH ROW
+BEGIN
+    IF :NEW.max_amount_per_trans > :NEW.max_amount_per_day THEN
+        RAISE_APPLICATION_ERROR(
+            -20036,
+            'max_amount_per_trans ('
+            || TO_CHAR(:NEW.max_amount_per_trans)
+            || ') không được vượt quá max_amount_per_day ('
+            || TO_CHAR(:NEW.max_amount_per_day) || ').'
+        );
+    END IF;
+END;
+/
+
+--Ràng buộc 37: Ví gửi và ví nhận không được trùng nhau 
+CREATE OR REPLACE TRIGGER trg_wallet_not_same
+BEFORE INSERT OR UPDATE OF sender_wallet_id, receiver_wallet_id
+    ON transactions
+FOR EACH ROW
+BEGIN
+    IF     :NEW.sender_wallet_id   IS NOT NULL
+       AND :NEW.receiver_wallet_id IS NOT NULL
+       AND :NEW.sender_wallet_id   =  :NEW.receiver_wallet_id
+    THEN
+        RAISE_APPLICATION_ERROR(
+            -20037,
+            'Ví gửi (sender_wallet_id = '
+            || TO_CHAR(:NEW.sender_wallet_id)
+            || ') và ví nhận không được trùng nhau.'
+        );
+    END IF;
+END;
+/
+
+--Ràng buộc 38: Chỉ ví ACTIVE mới được gửi tiền. 
+--kiểm tra khi thêm sửa
+CREATE OR REPLACE TRIGGER trg_active_sender_wallet
+BEFORE INSERT OR UPDATE OF sender_wallet_id ON transactions
+FOR EACH ROW
+DECLARE
+    v_status wallets.wallet_status%TYPE;
+BEGIN
+    IF :NEW.sender_wallet_id IS NOT NULL THEN
+        BEGIN
+            SELECT wallet_status
+              INTO v_status
+              FROM wallets
+             WHERE wallet_id = :NEW.sender_wallet_id;
+        EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+                RAISE_APPLICATION_ERROR(
+                    -20038,
+                    'Ví gửi (wallet_id = '
+                    || TO_CHAR(:NEW.sender_wallet_id)
+                    || ') không tồn tại nha bạn.'
+                );
+        END;
+ 
+        IF v_status <> 'ACTIVE' THEN
+            RAISE_APPLICATION_ERROR(
+                -20038,
+                'Ví gửi (wallet_id = '
+                || TO_CHAR(:NEW.sender_wallet_id)
+                || ') đang ở trạng thái "' || v_status
+                || '". Chỉ ví ACTIVE mới được gửi tiền nha bạn.'
+            );
+        END IF;
+    END IF;
+END;
+/
+--kiểm tra khi đổi trạng thái ví
+CREATE OR REPLACE TRIGGER trg_active_sender_wallet_status
+BEFORE UPDATE OF wallet_status ON wallets
+FOR EACH ROW
+DECLARE
+    v_pending_count NUMBER;
+BEGIN
+    IF :OLD.wallet_status = 'ACTIVE'
+       AND :NEW.wallet_status <> 'ACTIVE'
+    THEN
+        SELECT COUNT(*)
+          INTO v_pending_count
+          FROM transactions
+         WHERE sender_wallet_id = :NEW.wallet_id
+           AND status           = 'PENDING';
+ 
+        IF v_pending_count > 0 THEN
+            RAISE_APPLICATION_ERROR(
+                -20038,
+                'Không thể chuyển ví (wallet_id = '
+                || TO_CHAR(:NEW.wallet_id)
+                || ') sang trạng thái "' || :NEW.wallet_status
+                || '" ví con ' || TO_CHAR(v_pending_count)
+                || ' giao dịch PENDING đang sử dụng ví này để gửi tiền nha bạn.'
+            );
+        END IF;
+    END IF;
+END;
+/
+
+--Ràng buộc 39: Giao dịch TRANSFER phải có cả ví gửi và ví nhận. 
+-- kiểm tra khi thêm hoặc sửa
+CREATE OR REPLACE TRIGGER trg_transfer_wallets
+BEFORE INSERT OR UPDATE OF type_id, sender_wallet_id, receiver_wallet_id
+    ON transactions
+FOR EACH ROW
+DECLARE
+    v_type_code transaction_types.type_code%TYPE;
+BEGIN
+    IF :NEW.type_id IS NOT NULL THEN
+        BEGIN
+            SELECT type_code
+              INTO v_type_code
+              FROM transaction_types
+             WHERE type_id = :NEW.type_id;
+        EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+                RAISE_APPLICATION_ERROR(
+                    -20039,
+                    'type_id = '
+                    || TO_CHAR(:NEW.type_id)
+                    || ' không tồn tại trong TRANSACTION_TYPES nha bạn.'
+                );
+        END;
+ 
+        IF v_type_code = 'TRANSFER' THEN
+            IF :NEW.sender_wallet_id IS NULL THEN
+                RAISE_APPLICATION_ERROR(
+                    -20039,
+                    'Giao dịch TRANSFER (transaction_id = '
+                    || NVL(TO_CHAR(:NEW.transaction_id), 'NEW')
+                    || ') thiếu sender_wallet_id nha bạn.'
+                );
+            END IF;
+ 
+            IF :NEW.receiver_wallet_id IS NULL THEN
+                RAISE_APPLICATION_ERROR(
+                    -20039,
+                    'Giao dịch TRANSFER (transaction_id = '
+                    || NVL(TO_CHAR(:NEW.transaction_id), 'NEW')
+                    || ') thiếu receiver_wallet_id nha bạn.'
+                );
+            END IF;
+        END IF;
+    END IF;
+END;
+/
+-- kiểm tra khi đổi type_code thành 'TRANSFER'
+CREATE OR REPLACE TRIGGER trg_transfer_wallets_type_code
+BEFORE UPDATE OF type_code ON transaction_types
+FOR EACH ROW
+DECLARE
+    v_violate_count NUMBER;
+BEGIN
+    IF :NEW.type_code = 'TRANSFER' AND :OLD.type_code <> 'TRANSFER' THEN
+        SELECT COUNT(*)
+          INTO v_violate_count
+          FROM transactions
+         WHERE type_id = :NEW.type_id
+           AND (sender_wallet_id IS NULL OR receiver_wallet_id IS NULL);
+ 
+        IF v_violate_count > 0 THEN
+            RAISE_APPLICATION_ERROR(
+                -20039,
+                'Có ' || TO_CHAR(v_violate_count)
+                || ' giao dịch dùng type_id = '
+                || TO_CHAR(:NEW.type_id)
+                || ' đang thiếu sender hoặc receiver wallet nha bạn. '
+                || 'Không thể đổi type_code sang TRANSFER nha bạn.'
+            );
+        END IF;
+    END IF;
+END;
+/
