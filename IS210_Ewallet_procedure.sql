@@ -675,7 +675,6 @@ BEGIN
     FROM   transaction_limits
     WHERE  kyc_level = v_kyc_level
       AND  ROWNUM = 1;
-.
     v_fee_amount   := fn_real_fee(v_type_id, p_amount);
     v_total_amount := p_amount + v_fee_amount;
 
