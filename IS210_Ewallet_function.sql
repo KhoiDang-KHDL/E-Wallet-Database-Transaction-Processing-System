@@ -85,7 +85,7 @@ EXCEPTION
 END;
 /
 
---9. Kiá»ƒm tra xem vÃ­ (ngÆ°á»i gá»­i/ngÆ°á»i nháº­n) cÃ³ Ä‘ang á»Ÿ tráº¡ng thÃ¡i Ä‘Æ°á»£c phÃ©p giao dá»‹ch hay khÃ´ng (khÃ´ng bá»‹ khÃ³a hoáº·c Ä‘Ã³ng).
+--9. Kiểm tra xem ví (người gửi/người nhận) có đang ở trạng thái được phép giao dịch hay không (không bị khóa hoặc đóng).
 CREATE OR REPLACE FUNCTION fn_is_wallet_active (
     p_wallet_id IN NUMBER
 )
