@@ -35,7 +35,7 @@ export default function ScanQRScreen() {
     if (scanned) return; // Nếu đang xử lý rồi thì bỏ qua các lượt quét trùng
     setScanned(true);
 
-    // Giả lập đọc dữ liệu QR (ví dụ QR chứa số điện thoại hoặc link thanh toán)
+    // Giả lập đọc dữ liệu QR
     Alert.alert(
       "Quét thành công!",
       `Dữ liệu mã QR: ${data}`,
@@ -44,7 +44,6 @@ export default function ScanQRScreen() {
           text: "Chuyển tiền ngay", 
           onPress: () => {
             setScanned(false);
-            // Sau này quét xong sẽ truyền dữ liệu SĐT qua trang chuyển tiền
             router.push('/(transaction)/transfer'); 
           }
         },
@@ -62,20 +61,16 @@ export default function ScanQRScreen() {
         enableTorch={torch}
         onBarcodeScanned={handleBarcodeScanned}
         barcodeScannerSettings={{
-          barcodeTypes: ['qr'], // Chỉ nhận diện duy nhất mã QR
+          barcodeTypes: ['qr'], 
         }}
       >
         {/* 2. Lớp phủ Giao diện (Overlay) */}
         <View style={styles.overlayContainer}>
           
-          {/* Thay thế nút quay lại bằng khoảng trống để giữ nguyên bố cục không bị lệch */}
           <View style={styles.topSpace} />
-
-          {/* Khung vuông ở giữa để người dùng căn mã QR vào */}
           <View style={styles.maskContainer}>
             <Text style={styles.scanText}>Di chuyển camera đến vùng có mã QR</Text>
             <View style={styles.qrTargetBox}>
-              {/* Vẽ 4 góc vuông cho đẹp mắt */}
               <View style={[styles.corner, styles.topLeft]} />
               <View style={[styles.corner, styles.topRight]} />
               <View style={[styles.corner, styles.bottomLeft]} />
@@ -83,7 +78,6 @@ export default function ScanQRScreen() {
             </View>
           </View>
 
-          {/* Thanh công cụ phía dưới (Nút Flash) */}
           <View style={styles.bottomTools}>
             <TouchableOpacity 
               style={[styles.toolButton, torch && styles.toolButtonActive]} 
@@ -126,12 +120,12 @@ const styles = StyleSheet.create({
   },
   overlayContainer: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)', // Làm tối mờ xung quanh camera
+    backgroundColor: 'rgba(0,0,0,0.4)', 
     justifyContent: 'space-between',
   },
   topSpace: {
-    height: 45,       // Bằng chiều cao của nút bấm cũban đầu
-    marginTop: 50,    // Giữ khoảng cách an toàn từ đỉnh màn hình xuống (tránh tai thỏ)
+    height: 45,       
+    marginTop: 50,    
   },
   maskContainer: {
     alignItems: 'center',
@@ -154,7 +148,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     backgroundColor: 'transparent',
   },
-  // Style vẽ 4 góc viền xanh cho giống app quét thực tế
+
   corner: {
     position: 'absolute',
     width: 20,

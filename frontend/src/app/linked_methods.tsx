@@ -29,13 +29,13 @@ export default function LinkedMethodsScreen() {
     'Authorization': `Bearer ${token}`
   };
 
-  // 🌟 1. API: LẤY DANH SÁCH TÀI KHOẢN NGÂN HÀNG LIÊN KẾT (GET /payment-methods)
+  // 1. API: LẤY DANH SÁCH TÀI KHOẢN NGÂN HÀNG LIÊN KẾT
   const fetchPaymentMethods = async () => {
     try {
       const res = await fetch(`${API_URL}/payment-methods`, { method: 'GET', headers });
       if (res.ok) {
         const data = await res.json();
-        // Lọc hiển thị các tài khoản đang active (is_active === true)
+        // Lọc hiển thị các tài khoản đang active
         setMethods(Array.isArray(data) ? data.filter((m: any) => m.is_active) : []);
       }
     } catch (error) {
@@ -55,7 +55,7 @@ export default function LinkedMethodsScreen() {
     fetchPaymentMethods();
   };
 
-  // 🌟 2. API: THÊM LIÊN KẾT NGÂN HÀNG MỚI (POST /payment-methods)
+  // 2. API: THÊM LIÊN KẾT NGÂN HÀNG MỚI
   const handleAddPaymentMethod = async () => {
     if (!providerName || !accountNumber) {
       Alert.alert("Thông báo", "Vui lòng nhập tên Ngân hàng và Số tài khoản!");
@@ -70,7 +70,7 @@ export default function LinkedMethodsScreen() {
         body: JSON.stringify({
           method_type: 'BANK_ACCOUNT',
           provider_name: providerName,
-          masked_number: accountNumber, // Truyền số tài khoản gốc, hàm mask của DB hoặc FE tự xử lý
+          masked_number: accountNumber, 
           is_default: isDefault
         })
       });
@@ -81,7 +81,7 @@ export default function LinkedMethodsScreen() {
         setProviderName('');
         setAccountNumber('');
         setIsDefault(false);
-        fetchPaymentMethods(); // Reload lại danh sách thẻ
+        fetchPaymentMethods();
       } else {
         const err = await res.json();
         Alert.alert("Lỗi", err.detail || "Không thể liên kết ngân hàng này.");
@@ -93,7 +93,7 @@ export default function LinkedMethodsScreen() {
     }
   };
 
-  // 🌟 3. API: ĐẶT NGÂN HÀNG MẶC ĐỊNH (PUT /payment-methods/{id}/default)
+  // 3. API: ĐẶT NGÂN HÀNG MẶC ĐỊNH 
   const handleSetDefault = async (methodId: number) => {
     try {
       const res = await fetch(`${API_URL}/payment-methods/${methodId}/default`, {
@@ -101,7 +101,7 @@ export default function LinkedMethodsScreen() {
         headers
       });
       if (res.ok) {
-        fetchPaymentMethods(); // Tải lại để cập nhật gắn tag dấu tick "Mặc định"
+        fetchPaymentMethods(); 
       } else {
         const err = await res.json();
         Alert.alert("Thất bại", err.detail || "Không thể đặt làm mặc định.");
@@ -111,7 +111,7 @@ export default function LinkedMethodsScreen() {
     }
   };
 
-  // 🌟 4. API: HỦY LIÊN KẾT NGÂN HÀNG (DELETE /payment-methods/{id})
+  // API: HỦY LIÊN KẾT NGÂN HÀNG 
   const handleUnlinkMethod = (methodId: number, bankName: string) => {
     Alert.alert(
       "Hủy liên kết",
@@ -240,7 +240,7 @@ export default function LinkedMethodsScreen() {
         <Text style={styles.addCardButtonText}>Liên kết ngân hàng mới</Text>
       </TouchableOpacity>
 
-      {/* 🌟 MODAL POPUP THÊM THẺ NHANH */}
+      {/* MODAL POPUP THÊM THẺ NHANH */}
       <Modal visible={isAddModalVisible} animationType="slide" transparent={true} onRequestClose={() => setIsAddModalVisible(false)}>
         <View style={styles.modalOverlay}>
           <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalContent}>

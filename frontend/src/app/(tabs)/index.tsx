@@ -45,7 +45,7 @@ export default function HomeScreen() {
   const fetchHomeScreenData = async () => {
     setLoading(true);
     
-    // 1. Lấy token ra để chuẩn bị gửi lên Backend
+    // Lấy token ra để gửi lên Backend
     const token = getToken();
     
     console.log('================ [API HOME REQUEST] ================');
@@ -60,14 +60,14 @@ export default function HomeScreen() {
       return;
     }
 
-    // 2. Cấu hình Headers chứa chuỗi xác thực Bearer Token đúng chuẩn FastAPI
+    // Cấu hình Headers chứa chuỗi xác thực Bearer Token 
     const headers = { 
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     }; 
 
     try {
-      // Gọi đồng thời cả 3 API thật bằng Promise.all nhằm tăng tốc độ tải UI
+      // Gọi đồng thời cả 3 API thật bằng Promise.all
       const [profileRes, walletRes, transRes] = await Promise.all([
         fetch(`${API_URL}/me`, { method: 'GET', headers }),
         fetch(`${API_URL}/wallet`, { method: 'GET', headers }),
@@ -88,7 +88,6 @@ export default function HomeScreen() {
       if (profileRes.ok && walletRes.ok && transRes.ok) {
         setProfile(profileData);
         setWallet(walletData);
-        // Đảm bảo dữ liệu transaction trả về dạng mảng, nếu lỗi cấu trúc thì gán mảng rỗng
         setTransactions(Array.isArray(transData) ? transData : []);
       } else {
         console.error('Lỗi từ một trong các API:', { profileData, walletData, transData });
@@ -113,25 +112,23 @@ export default function HomeScreen() {
 
   return (
     <ScrollView style={styles.container} bounces={false} showsVerticalScrollIndicator={false}>
-      {/* 1. HEADER (Đã chỉnh sửa để thêm cụm nút bên phải) */}
+      {/* 1. HEADER */}
       <View style={styles.header}>
         <View>
           <Text style={styles.greeting}>Xin chào 👋</Text>
           <Text style={styles.userName}>{getFirstName(profile?.full_name)}</Text>
         </View>
 
-        {/* CỤM ICON MỚI: Thông báo và Cài đặt */}
         <View style={styles.headerButtons}>
           <TouchableOpacity 
             style={styles.headerIconBtn} 
-            // onPress={() => Alert.alert('Thông báo', 'Tính năng thông báo đang được phát triển!')}
           >
             <Ionicons name="notifications-outline" size={24} color="#1F2937" />
           </TouchableOpacity>
 
           <TouchableOpacity 
             style={styles.headerIconBtn} 
-            onPress={() => router.push('/settings')} // Điều hướng thẳng tới file settings theo cấu trúc layout của bạn
+            onPress={() => router.push('/settings')} 
           >
             <Ionicons name="settings-outline" size={24} color="#1F2937" />
           </TouchableOpacity>
@@ -204,13 +201,12 @@ export default function HomeScreen() {
             let displayIcon = 'cash-outline';
             let isPositive = false;
 
-            // 🌟 CẢI TIẾN CHÍNH: Cắt khoảng trắng thừa từ kiểu CHAR của Oracle DB và ép chữ in hoa
             const typeCodeClean = item.type_code ? item.type_code.trim().toUpperCase() : '';
 
-            // 1. Xác định Icon và dòng tiền (Âm/Dương) dựa vào typeCode đã làm sạch
+            // Xác định Icon và dòng tiền (Âm/Dương) dựa vào typeCode đã làm sạch
             if (typeCodeClean === 'DEPOSIT' || typeCodeClean === 'TOP_UP') {
               displayIcon = 'arrow-up-circle';
-              isPositive = true; // Hiện dấu cộng (+) và màu xanh lá chuẩn xác
+              isPositive = true;
             } else if (typeCodeClean === 'WITHDRAW') {
               displayIcon = 'arrow-down-circle';
               isPositive = false;
@@ -219,7 +215,7 @@ export default function HomeScreen() {
               displayIcon = isPositive ? 'arrow-back-circle' : 'arrow-forward-circle';
             }
 
-            // 2. XỬ LÝ ĐIỀU KIỆN ĐỔI TÊN: Lọc sạch description rác
+            // XỬ LÝ ĐIỀU KIỆN ĐỔI TÊN: Lọc sạch description rác
             if (
               item.description && 
               !item.description.toLowerCase().includes('giao dịch đang xử lý') &&
@@ -228,7 +224,7 @@ export default function HomeScreen() {
               displayTitle = item.description.replace(/#\S+/g, '').replace(/\s+/g, ' ').trim();
             }
 
-            // 3. Nếu description trống hoặc dính chữ rác -> Gán tên nghiệp vụ chuẩn đồng bộ
+            // Nếu description trống hoặc dính chữ rác -> Gán tên nghiệp vụ chuẩn đồng bộ
             if (!displayTitle) {
               if (typeCodeClean === 'DEPOSIT' || typeCodeClean === 'TOP_UP') {
                 displayTitle = 'Nạp tiền vào ví';
@@ -257,7 +253,7 @@ export default function HomeScreen() {
                 
                 <Text style={[
                   styles.itemAmount, 
-                  { color: isPositive ? '#10B981' : '#1F2937' } // Xanh lá nếu tiền vào, đen nếu tiền ra
+                  { color: isPositive ? '#10B981' : '#1F2937' } 
                 ]}>
                   {isPositive ? '+' : '-'}{formatCurrency(item.amount)}đ
                 </Text>
@@ -278,15 +274,14 @@ const styles = StyleSheet.create({
   greeting: { fontSize: 14, color: '#6B7280', paddingLeft: 10 },
   userName: { fontSize: 24, fontWeight: '800', color: '#1F2937', marginTop: 2, paddingLeft: 10 },
   
-  // STYLE CỤM BUTTON MỚI:
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   headerIconBtn: {
     padding: 8,
-    marginLeft: 8, // Tạo khoảng cách nhẹ giữa 2 nút bấm
-    backgroundColor: '#FFFFFF', // Thêm nền trắng bo tròn nhẹ cho nút bấm trông sang xịn mịn hơn
+    marginLeft: 8,
+    backgroundColor: '#FFFFFF', 
     borderRadius: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },

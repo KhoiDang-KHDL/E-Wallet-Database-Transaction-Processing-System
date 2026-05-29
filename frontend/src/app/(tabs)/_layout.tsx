@@ -11,19 +11,19 @@ export default function TabLayout() {
         headerShown: false,
         tabBarShowLabel: true,
         // Cấu hình màu sắc chữ tổng quan
-        tabBarActiveTintColor: Colors.primary, // Chữ khi được chọn sẽ có màu xanh chủ đạo
-        tabBarInactiveTintColor: '#9CA3AF',    // Chữ khi chưa chọn màu xám
+        tabBarActiveTintColor: Colors.primary,
+        tabBarInactiveTintColor: '#9CA3AF',
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: '600',
-          marginBottom: 10, // Đẩy chữ lên một chút cho cân đối
+          marginBottom: 10,
         },
         tabBarStyle: {
-          height: 100, // Giảm chiều cao xuống một chút cho chuẩn UI thực tế
+          height: 100, 
           backgroundColor: '#FFFFFF',
           borderTopWidth: 1,
           borderTopColor: '#E5E7EB',
-          position: 'absolute', // Giúp hình tròn nhô hẳn lên trên màn hình chính được
+          position: 'absolute', 
         },
       }}
     >
@@ -112,9 +112,9 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   iconContainer: {
-    width: 70, // 🌟 Giảm size xuống vừa vặn để ôm khít icon mà không đè chữ
+    width: 70,
     height: 70,
-    borderRadius: 28, // Một nửa width/height để tạo thành hình tròn xịn
+    borderRadius: 28, 
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 4,
@@ -122,13 +122,11 @@ const styles = StyleSheet.create({
   },
 
   activeIcon: {
-    backgroundColor: '#F3F4F6', // 🌟 Đổi sang màu xám siêu nhạt để tương phản với thanh trắng
-    // 🌟 ĐỔ BÓNG CHO IOS
+    backgroundColor: '#F3F4F6', 
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
-    // 🌟 ĐỔ BÓNG CHO ANDROID
     elevation: 4,
   },
 });

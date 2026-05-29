@@ -8,7 +8,7 @@ import { InputField } from '../components/input_field';
 export default function RegisterScreen() {
   const router = useRouter();
   const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState(''); // <--- THÊM STATE EMAIL
+  const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -16,7 +16,6 @@ export default function RegisterScreen() {
 
   const handleRegister = () => {
     // 1. Kiểm tra validation cơ bản
-    // THÊM !email VÀO ĐIỀU KIỆN KIỂM TRA ĐẦY ĐỦ THÔNG TIN
     if (!fullName || !email || !phone || !password || !confirmPassword) {
       alert('Vui lòng nhập đầy đủ tất cả các thông tin!');
       return;
@@ -40,7 +39,6 @@ export default function RegisterScreen() {
     }
     
     // BẬT LOGIC ĐIỀU HƯỚNG MỚI: 
-    // Không gọi API ở đây nữa mà chuyển tiếp dữ liệu sang trang tạo mã PIN
     router.push({
       pathname: '/register_pin',
       // THÊM email VÀO PARAMS ĐỂ TRUYỀN SANG TRANG SAU

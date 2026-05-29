@@ -2,7 +2,7 @@ import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, TouchableOpacity
 
 interface ButtonProps extends TouchableOpacityProps {
   title: string;
-  loading?: boolean; // Hiển thị vòng xoay khi đang xử lý (ví dụ: đang đăng nhập)
+  loading?: boolean; // Hiển thị vòng xoay khi đang xử lý 
 }
 
 export function Button({ title, style, loading, disabled, ...rest }: ButtonProps) {
@@ -24,10 +24,10 @@ export function Button({ title, style, loading, disabled, ...rest }: ButtonProps
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#10B981', // Màu xanh đặc trưng ví điện tử
+    backgroundColor: '#10B981',
     paddingVertical: 14,
     paddingHorizontal: 24,
-    borderRadius: 12, // Bo góc hiện đại
+    borderRadius: 12, 
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
@@ -35,10 +35,10 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-    elevation: 3, // Tạo bóng đổ trên Android
+    elevation: 3,
   },
   disabled: {
-    backgroundColor: '#A7F3D0', // Màu mờ khi bị disable
+    backgroundColor: '#A7F3D0',
   },
   text: {
     color: '#fff',

@@ -15,7 +15,6 @@ export default function DepositScreen() {
   const router = useRouter();
   const navigation = useNavigation(); // Khởi tạo để can thiệp nút Back Header
   
-  // 🌟 ĐÃ CẬP NHẬT: Nhận mã voucher và số tiền giữ lại khi đi từ trang list_vouchers quay về
   const searchParams = useLocalSearchParams<{ voucher_code?: string; amount?: string }>();
   
   // Quản lý state dữ liệu từ DB
@@ -67,7 +66,7 @@ export default function DepositScreen() {
     'Authorization': `Bearer ${token}`
   };
 
-  // Tải danh sách ngân hàng liên kết từ Oracle DB
+  // Tải danh sách ngân hàng liên kết từ DB
   useEffect(() => {
     async function fetchPaymentMethods() {
       try {
@@ -243,7 +242,7 @@ export default function DepositScreen() {
           </>
         )}
 
-        {/* 🌟 SECTION 2: VOUCHER SELECTION (ĐÃ CHÈN LOGIC TRUYỀN AMOUNT SANG TRANG LIST_VOUCHER) */}
+        {/* VOUCHER SELECTION */}
         <Text style={styles.sectionLabel}>Chương trình ưu đãi (Voucher)</Text>
         <TouchableOpacity 
           style={[
@@ -251,7 +250,6 @@ export default function DepositScreen() {
             selectedVoucher ? styles.voucherCardActive : null 
           ]} 
           onPress={() => {
-            // Đẩy kèm cả số tiền nạp hiện tại qua URL để trang list lọc điều kiện min_order_value
             router.push({
               pathname: '/list_vouchers',
               params: {
@@ -293,7 +291,7 @@ export default function DepositScreen() {
           </View>
         </TouchableOpacity>
 
-        {/* SECTION 3: AMOUNT INPUT */}
+        {/* AMOUNT INPUT */}
         <Text style={styles.sectionLabel}>Số tiền muốn nạp</Text>
         <View style={styles.amountInputBox}>
           <View style={styles.inputWrapper}>

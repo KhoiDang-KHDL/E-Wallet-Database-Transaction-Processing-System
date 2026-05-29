@@ -5,7 +5,7 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 // Biến toàn cục để lưu Token dùng xuyên suốt các trang mà không cần tạo Context
 export let USER_TOKEN = { current: '' };
-export const API_BASE_URL = 'http://10.0.2.2:8000'; // Đổi IP máy tính của bạn ở đây nếu test điện thoại thật
+export const API_BASE_URL = 'http://10.0.2.2:8000';
 
 export default function RootLayout() {
   const [isServerOk, setIsServerOk] = useState<boolean | null>(null);

@@ -29,7 +29,7 @@ export default function VoucherScreen() {
         setVouchers(Array.isArray(data) ? data : []);
       }
     } catch (error) {
-      console.error("🔴 Lỗi tải danh sách voucher:", error);
+      console.error("Lỗi tải danh sách voucher:", error);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -111,16 +111,14 @@ export default function VoucherScreen() {
           filteredVouchers.map((item) => (
             <View key={item.voucher_id} style={styles.voucherCard}>
               
-              {/* Vế bên trái: Mã Code & Màu sắc thương hiệu (Dùng màu xanh dương chuẩn ví) */}
               <View style={[styles.cardLeft, { backgroundColor: '#2563EB' }]}>
                 <Ionicons name="gift-outline" size={26} color="#fff" />
                 <Text style={styles.brandText} numberOfLines={1}>{item.code}</Text>
               </View>
 
-              {/* Vế bên phải: Nội dung tính toán động từ Oracle DB */}
               <View style={styles.cardRight}>
                 <View style={{ flex: 1, justifyContent: 'center' }}>
-                  {/* Tiêu đề: Mức giảm */}
+                  {/* Tiêu đề */}
                   <Text style={styles.descText} numberOfLines={1}>
                     {formatDiscountLabel(item)}
                   </Text>
@@ -141,7 +139,6 @@ export default function VoucherScreen() {
                 </View>
               </View>
 
-              {/* Hiệu ứng vết cắt vé răng cưa CSS */}
               <View style={styles.cutoutTop} />
               <View style={styles.cutoutBottom} />
               <View style={styles.dashLine} />

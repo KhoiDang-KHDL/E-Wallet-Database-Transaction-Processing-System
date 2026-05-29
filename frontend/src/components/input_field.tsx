@@ -7,14 +7,14 @@ interface InputFieldProps extends TextInputProps {
   label?: string;
   error?: string;
   isPassword?: boolean;
-  required?: boolean; // 1. 🌟 Thêm prop này để bật/tắt dấu * đỏ tự do
+  required?: boolean; 
 }
 
 export function InputField({ 
   label, 
   error, 
   isPassword, 
-  required, // 2. 🌟 Lấy prop required ra xài ở đây
+  required, // ]Lấy prop required ra xài ở đây
   style, 
   secureTextEntry, 
   ...rest 
@@ -24,11 +24,10 @@ export function InputField({
 
   return (
     <View style={styles.container}>
-      {/* 3. 🌟 Bọc label lại để xử lý điều kiện hiện dấu * */}
+      {/* Bọc label lại để xử lý điều kiện hiện dấu */}
       {label && (
         <View style={styles.labelContainer}>
           <Text style={styles.label}>{label}</Text>
-          {/* Chỉ khi nào có truyền 'required' thì mới vẽ dấu * màu đỏ ra */}
           {required && <Text style={styles.requiredAsterisk}> *</Text>}
         </View>
       )}
@@ -66,7 +65,7 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 16,
   },
-  // 4. 🌟 Thêm layout hàng ngang cho label và dấu *
+  // 4. Thêm layout hàng ngang cho label và dấu *
   labelContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -76,9 +75,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#374151',
-    // Đã bỏ marginBottom ở đây vì labelContainer đã quản lý khoảng cách
   },
-  // 5. 🌟 Style định dạng riêng cho dấu * đỏ
+  // 5. Style định dạng riêng cho dấu * đỏ
   requiredAsterisk: {
     color: '#EF4444',
     fontSize: 14,

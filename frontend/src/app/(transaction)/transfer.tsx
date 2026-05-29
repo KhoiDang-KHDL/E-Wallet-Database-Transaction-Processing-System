@@ -13,7 +13,7 @@ export default function TransferScreen() {
   const router = useRouter();
   const navigation = useNavigation(); // Khởi tạo navigation để can thiệp header layout
   
-  // 🌟 LẤY THAM SỐ TRẢ VỀ TỪ TRANG VOUCHER (Nếu user chọn xong và quay lại)
+  // LẤY THAM SỐ TRẢ VỀ TỪ TRANG VOUCHER
   const searchParams = useLocalSearchParams<{ voucher_code?: string; amount?: string }>();
   
   // Các trạng thái UI/UX
@@ -242,14 +242,13 @@ export default function TransferScreen() {
           </View>
         </View>
 
-        {/* 🌟 5. VOUCHER SELECTION (ĐÃ CHÈN LOGIC TRUYỀN AMOUNT SANG TRANG LIST_VOUCHER) */}
+        {/* 5. VOUCHER SELECTION */}
         <TouchableOpacity 
           style={[
             styles.voucherCard, 
             selectedVoucher ? styles.voucherCardActive : null
           ]} 
           onPress={() => {
-            // Đẩy kèm cả số tiền hiện tại qua URL để trang list lọc điều kiện min_order_value
             router.push({
               pathname: '/list_vouchers',
               params: {

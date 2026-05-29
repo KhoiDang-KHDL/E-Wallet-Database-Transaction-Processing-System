@@ -24,7 +24,7 @@ export default function UpdatePinStep1Screen() {
       setSubmitting(true);
       setTimeout(() => {
         setSubmitting(false);
-        // 🌟 Chuyển sang màn hình update_pin2 kèm theo mã pin cũ trên URL
+        // Chuyển sang màn hình update_pin2 kèm theo mã pin cũ trên URL
         router.push({
           pathname: '/update_pin2',
           params: { old_pin_code: fullPinStr }

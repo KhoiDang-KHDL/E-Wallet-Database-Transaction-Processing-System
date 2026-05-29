@@ -9,7 +9,7 @@ import { getToken } from '../utils/auth_storage';
 
 export default function UpdatePasswordScreen() {
   const router = useRouter();
-  const [currentPassword, setCurrentPassword] = useState(''); // Đổi tên biến cho khớp
+  const [currentPassword, setCurrentPassword] = useState(''); 
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   
@@ -36,14 +36,14 @@ export default function UpdatePasswordScreen() {
     const token = getToken();
     try {
       // Gọi đến đúng endpoint @router.put("/password") của nhóm bạn
-      const res = await fetch(`${API_URL}/profile/password`, { // Điều chỉnh tiền tố route gốc phù hợp (/profile/password hoặc /users/password)
-        method: 'PUT', // Sửa từ POST sang PUT theo đúng API thật của bạn
+      const res = await fetch(`${API_URL}/profile/password`, { 
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          current_password: currentPassword, // 🌟 ĐÃ SỬA: Đổi đúng tên key trường dữ liệu nhận ở Backend
+          current_password: currentPassword, 
           new_password: newPassword
         })
       });

@@ -27,7 +27,7 @@ export default function WithdrawScreen() {
   const [showBankList, setShowBankList] = useState(false);
   const [estimating, setEstimating] = useState(false);
 
-  // 🌟 1. CỐ ĐỊNH LUỒNG ĐIỀU HƯỚNG BACK PHI THẲNG VỀ HOME
+  // 1. CỐ ĐỊNH LUỒNG ĐIỀU HƯỚNG BACK PHI THẲNG VỀ HOME
   useEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
@@ -59,7 +59,7 @@ export default function WithdrawScreen() {
     'Authorization': `Bearer ${token}`
   };
 
-  // 🌟 2. LẤY TÀI KHOẢN NGÂN HÀNG NHẬN TIỀN THẬT TỪ DATABASE ORACLE
+  // 2. LẤY TÀI KHOẢN NGÂN HÀNG NHẬN TIỀN THẬT TỪ DATABASE ORACLE
   useEffect(() => {
     async function fetchPaymentMethods() {
       try {
@@ -75,7 +75,7 @@ export default function WithdrawScreen() {
           }
         }
       } catch (error) {
-        console.error("🔴 Lỗi tải danh sách ngân hàng rút tiền:", error);
+        console.error("Lỗi tải danh sách ngân hàng rút tiền:", error);
       } finally {
         setLoadingBanks(false);
       }
@@ -88,7 +88,7 @@ export default function WithdrawScreen() {
     return parseInt(val).toLocaleString('vi-VN');
   };
 
-  // 🌟 3. CHE SỐ TÀI KHOẢN AN TOÀN TRÊN UI
+  // 3. CHE SỐ TÀI KHOẢN AN TOÀN TRÊN UI
   const maskBankAccount = (accountNumber: string | number) => {
     if (!accountNumber) return '•••• ••••';
     const str = accountNumber.toString().replace(/\s/g, '');
@@ -105,7 +105,7 @@ export default function WithdrawScreen() {
     return '#4B5563';
   };
 
-  // 🌟 4. GỌI ESTIMATE TÍNH PHÍ RÚT VÀ ĐẨY SANG CONFIRM
+  // 4. GỌI ESTIMATE TÍNH PHÍ RÚT VÀ ĐẨY SANG CONFIRM
   const handleNext = async () => {
     if (!selectedBank) {
       Alert.alert('Thông báo', 'Vui lòng liên kết ngân hàng trước khi thực hiện rút tiền!');

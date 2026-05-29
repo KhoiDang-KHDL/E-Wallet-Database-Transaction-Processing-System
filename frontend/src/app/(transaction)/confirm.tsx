@@ -27,8 +27,8 @@ export default function ConfirmScreen() {
     name?: string;
     
     // Thêm các tham số riêng cho Nạp tiền / Rút tiền (Deposit / Withdraw)
-    bank?: string;            // Tên ngân hàng liên kết (để hiển thị UI)
-    method_id?: string;       // ID ngân hàng (để gửi xuống API Backend)
+    bank?: string;            // Tên ngân hàng liên kết
+    method_id?: string;       // ID ngân hàng
     idempotency_key?: string; // Khóa chống trùng giao dịch
   }>();
 
@@ -95,7 +95,7 @@ export default function ConfirmScreen() {
     let endpoint = '';
     let bodyPayload = {};
 
-    // RẼ NHÁNH TẠO PAYLOAD CHUẨN THEO ĐÚNG FASTAPI / ORACLE CỦA BẠN
+    // RẼ NHÁNH TẠO PAYLOAD
     switch (params.type) {
       case 'deposit':
         endpoint = `${API_URL}/transactions/top-up`;
@@ -114,7 +114,7 @@ export default function ConfirmScreen() {
         bodyPayload = {
           method_id: parseInt(params.method_id || '1'),
           amount: parseInt(params.amount),
-          pin_code: completedPin, // Bắt buộc truyền mã PIN để sp_withdraw_request verify
+          pin_code: completedPin, 
           idempotency_key: params.idempotency_key || `withdraw_${Date.now()}`,
           description: params.description || "Rút tiền từ ví về ngân hàng"
         };
@@ -127,7 +127,7 @@ export default function ConfirmScreen() {
           receiver_phone: params.phone || null,
           receiver_wallet_id: null,
           amount: parseInt(params.amount),
-          pin_code: completedPin, // Bắt buộc mã PIN xác thực chuyển tiền
+          pin_code: completedPin, 
           voucher_code: params.voucher_code || null,
           description: params.description || "Chuyển tiền ví điện tử"
         };
@@ -154,7 +154,7 @@ export default function ConfirmScreen() {
       console.log('=====================================================');
 
       if (response.ok) {
-        setIsModalVisible(false); // Đóng pop-up mã PIN thành công
+        setIsModalVisible(false); 
         
         // Trích xuất mã giao dịch động (Bởi vì Top-up trả ra order_id, còn Transfer/Withdraw trả ra reference_code)
         let displayRefCode = 'N/A';
@@ -162,7 +162,7 @@ export default function ConfirmScreen() {
         else if (data.order_id) displayRefCode = `ORD_${data.order_id}`;
         else if (data.transaction_id) displayRefCode = `TX_${data.transaction_id}`;
 
-        // Đẩy sang trang kết quả xịn sò
+        // Đẩy sang trang kết quả
         router.replace({
           pathname: "/(transaction)/result",
           params: {
@@ -178,9 +178,9 @@ export default function ConfirmScreen() {
           }
         });
       } else {
-        // GIAO DỊCH THẤT BẠI (Sai mã PIN, lỗi số dư, lỗi Stored Procedure...)
+        // GIAO DỊCH THẤT BẠI 
         setIsModalVisible(false);
-        setPin(['', '', '', '', '', '']); // Xóa trắng mảng mã PIN
+        setPin(['', '', '', '', '', '']); 
 
         router.replace({
           pathname: "/(transaction)/result",
@@ -255,7 +255,7 @@ export default function ConfirmScreen() {
         <TouchableOpacity 
           style={[styles.confirmButton, { backgroundColor: info.color }]} 
           onPress={() => {
-            setPin(['', '', '', '', '', '']); // Clear PIN cũ nếu có
+            setPin(['', '', '', '', '', '']); 
             setIsModalVisible(true);
           }}
         >
@@ -264,7 +264,7 @@ export default function ConfirmScreen() {
 
       </ScrollView>
 
-      {/* 🌟 3. POP-UP MODAL NHẬP MÃ PIN (MỚI BỔ SUNG) */}
+      {/* 3. POP-UP MODAL NHẬP MÃ PIN (MỚI BỔ SUNG) */}
       <Modal
         visible={isModalVisible}
         transparent={true}
@@ -299,14 +299,14 @@ export default function ConfirmScreen() {
                   style={styles.otpInput}
                   keyboardType="number-pad"
                   maxLength={1}
-                  secureTextEntry={true} // Hiện dấu chấm bảo mật thay vì lộ số
+                  secureTextEntry={true} 
                   value={digit}
                   onChangeText={(text) => handlePinChange(text, index)}
                   onKeyPress={(e) => handleKeyPress(e, index)}
                   ref={(ref) => {
                     inputRefs.current[index] = ref;
                   }}
-                  autoFocus={index === 0} // Tự động mở bàn phím ở ô đầu tiên
+                  autoFocus={index === 0} 
                   editable={!submitting}
                 />
               ))}

@@ -11,7 +11,6 @@ import { getToken } from '../../utils/auth_storage';
 export default function ListVoucherScreen() {
   const router = useRouter();
   
-  // 🌟 ĐÃ CẬP NHẬT: Nhận thêm biến amount truyền từ trang trước sang
   const { referrer, amount } = useLocalSearchParams<{ 
     referrer: 'transfer' | 'deposit';
     amount?: string; 
@@ -57,7 +56,7 @@ export default function ListVoucherScreen() {
     fetchVouchers();
   };
 
-  // Trả data ngược về lại trang trước đó (Đính kèm ngược lại cả amount cũ để trang trước ko bị mất data)
+  // Trả data ngược về lại trang trước đó
   const handleApplyVoucher = (voucherCode: string) => {
     const targetPath = currentTransactionType === 'deposit' 
       ? "/(transaction)/deposit" 
@@ -67,7 +66,7 @@ export default function ListVoucherScreen() {
       pathname: targetPath as any,
       params: { 
         voucher_code: voucherCode,
-        amount: amount // Giữ lại số tiền cho màn hình trước
+        amount: amount 
       } 
     });
   };
@@ -96,13 +95,13 @@ export default function ListVoucherScreen() {
     );
   }
 
-  // 🌟 BƯỚC CẢI TIẾN CHÍNH: Lọc trực tiếp mảng voucher hợp lệ trước khi Render
+  // Lọc trực tiếp mảng voucher hợp lệ trước khi Render
   const applicableVouchers = vouchers.filter((item) => {
     // 1. Kiểm tra loại giao dịch (Nạp tiền vs Chuyển tiền)
     const isTopUpCode = item.code.toUpperCase().includes('NAP') || item.code.toUpperCase().includes('TOPUP');
     const isTypeMatch = currentTransactionType === 'deposit' ? isTopUpCode : !isTopUpCode;
 
-    // 2. Kiểm tra điều kiện giá trị giao dịch tối thiểu (ví dụ: giao dịch phải >= 50,000đ)
+    // 2. Kiểm tra điều kiện giá trị giao dịch tối thiểu 
     const minOrderValue = item.min_order_value || 0;
     const isAmountValid = currentAmount >= minOrderValue;
 
@@ -137,7 +136,7 @@ export default function ListVoucherScreen() {
 
         <Text style={styles.sectionNote}>Ưu đãi phù hợp với giao dịch của bạn</Text>
 
-        {/* 🌟 ĐÃ THAY ĐỔI: Sử dụng danh sách đã qua bộ lọc applicableVouchers */}
+        {/* Sử dụng danh sách đã qua bộ lọc applicableVouchers */}
         {applicableVouchers.length === 0 ? (
           <View style={styles.emptyContainer}>
             <Ionicons name="ticket-outline" size={48} color="#9CA3AF" />
@@ -150,7 +149,7 @@ export default function ListVoucherScreen() {
             return (
               <TouchableOpacity
                 key={item.voucher_id}
-                style={styles.voucherCard} // 🌟 ĐÃ XÓA: Bỏ hoàn toàn disabled và class style mờ
+                style={styles.voucherCard}
                 onPress={() => handleApplyVoucher(item.code)}
               >
                 {/* Cột trái */}

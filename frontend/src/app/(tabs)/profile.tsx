@@ -23,7 +23,7 @@ export default function ProfileScreen() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  // 1. Gọi API /me để lấy thông tin cá nhân thực tế
+  // Gọi API /me để lấy thông tin cá nhân thực tế
   useEffect(() => {
     async function fetchUserProfile() {
       const token = getToken();
@@ -48,7 +48,7 @@ export default function ProfileScreen() {
     fetchUserProfile();
   }, []);
 
-  // 2. Hàm xử lý gọi API Logout để Oracle cập nhật trạng thái session
+  // Hàm xử lý gọi API Logout để Oracle cập nhật trạng thái session
   const handleSignOut = () => {
     Alert.alert(
       "Đăng xuất",
@@ -130,8 +130,8 @@ export default function ProfileScreen() {
           return (
             <TouchableOpacity 
               key={item.id} 
-              disabled={!hasTargetScreen} // 🌟 Vẫn KHÓA không cho bấm nếu là mục "Thông báo"
-              activeOpacity={hasTargetScreen ? 0.7 : 1} // Tắt hiệu ứng mờ phản hồi khi chạm đối với mục bị khóa
+              disabled={!hasTargetScreen} 
+              activeOpacity={hasTargetScreen ? 0.7 : 1}
               style={[
                 styles.settingItem, 
                 index === settingItems.length - 1 ? { borderBottomWidth: 0 } : null
@@ -152,7 +152,6 @@ export default function ProfileScreen() {
                 </View>
               </View>
               
-              {/* 🌟 GIỮ NGUYÊN: Luôn luôn hiển thị ký hiệu mũi tên (>) cho tất cả các mục */}
               <Ionicons name="chevron-forward" size={18} color="#9CA3AF" />
             </TouchableOpacity>
           );

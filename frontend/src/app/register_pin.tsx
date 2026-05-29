@@ -6,10 +6,6 @@ import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, StyleSheet, T
 
 // IMPORT CẤU HÌNH API VÀ CHẾ ĐỘ MOCK DÙNG CHUNG
 import { API_URL } from '../utils/api';
-
-// 🌟 CẤU HÌNH ĐƯỜNG DẪN ĐĂNG NHẬP CỦA BẠN TẠI ĐÂY:
-// Nếu file đăng nhập của bạn là src/app/index.tsx thì để '/'
-// Nếu file đăng nhập của bạn là src/app/login.tsx thì sửa thành '/login'
 const LOGIN_ROUTE = '/login'; 
 
 export default function RegisterPinScreen() {
@@ -98,7 +94,6 @@ export default function RegisterPinScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
       style={styles.container}
     >
-      {/* 🌟 ĐÃ BỔ SUNG: Thanh Header chứa nút quay lại trang nhập thông tin trước đó */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()} disabled={loading}>
           <Ionicons name="arrow-back" size={24} color="#1F2937" />

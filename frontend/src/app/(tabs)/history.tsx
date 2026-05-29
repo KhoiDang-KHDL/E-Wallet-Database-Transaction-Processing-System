@@ -16,7 +16,7 @@ export default function HistoryScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  // 1. Tải dữ liệu lịch sử giao dịch và thông tin ví của mình từ Oracle DB
+  // Tải dữ liệu lịch sử giao dịch và thông tin ví từ Oracle DB
   const fetchHistoryData = async () => {
     const token = getToken();
     const headers = {
@@ -61,16 +61,15 @@ export default function HistoryScreen() {
     return num.toLocaleString('vi-VN');
   };
 
-  // 2. LOGIC CHUẨN HÓA TIÊU ĐỀ GIAO DỊCH VÀ PHÂN LOẠI (BỎ PENDING)
+  // LOGIC CHUẨN HÓA TIÊU ĐỀ GIAO DỊCH VÀ PHÂN LOẠI (BỎ PENDING)
   const processedActivities = transactions.map(item => {
     let displayTitle = ''; 
     let displayIcon = 'cash-outline';
     let isPositive = false;
 
-    // 🌟 BƯỚC CẢI TIẾN: Cắt bỏ khoảng trắng thừa do kiểu dữ liệu CHAR trong Oracle DB sinh ra
     const typeCodeClean = item.type_code ? item.type_code.trim().toUpperCase() : '';
 
-    // A. Xác định Icon và dòng tiền dựa vào typeCode đã được làm sạch (.trim())
+    // Xác định Icon và dòng tiền
     if (typeCodeClean === 'DEPOSIT' || typeCodeClean === 'TOP_UP') {
       displayIcon = 'arrow-up-circle';
       isPositive = true;
@@ -82,7 +81,7 @@ export default function HistoryScreen() {
       displayIcon = isPositive ? 'arrow-back-circle' : 'arrow-forward-circle';
     }
 
-    // B. Lọc sạch chuỗi description rác nhiễm dữ liệu test
+    // Lọc sạch chuỗi description
     if (
       item.description && 
       !item.description.toLowerCase().includes('giao dịch đang xử lý') &&
@@ -91,7 +90,7 @@ export default function HistoryScreen() {
       displayTitle = item.description.replace(/#\S+/g, '').replace(/\s+/g, ' ').trim();
     }
 
-    // C. Nếu description trống hoặc dính chữ rác -> Tự động ghi đè theo nghiệp vụ chuẩn
+    // Tự động ghi đè theo nghiệp vụ chuẩn khi description null
     if (!displayTitle) {
       if (typeCodeClean === 'DEPOSIT' || typeCodeClean === 'TOP_UP') {
         displayTitle = 'Nạp tiền vào ví';

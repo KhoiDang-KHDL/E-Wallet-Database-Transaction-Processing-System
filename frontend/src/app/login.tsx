@@ -58,7 +58,7 @@ export default function LoginScreen() {
 
       if (response.ok) {
         // ĐĂNG NHẬP THÀNH CÔNG
-        console.log('👉 Đăng nhập thành công! Token:', data.access_token);
+        console.log(' Đăng nhập thành công! Token:', data.access_token);
         
         // CẤT TOKEN VÀO KHO LƯU TRỮ TẠM THỜI
         setToken(data.access_token); 

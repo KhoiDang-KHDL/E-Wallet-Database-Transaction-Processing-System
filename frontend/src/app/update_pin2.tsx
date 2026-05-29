@@ -77,12 +77,12 @@ export default function UpdatePinStep2Screen() {
 
       if (res.ok) {
         Alert.alert("Thành công", "Mã PIN an toàn đã được cập nhật thành công!");
-        router.dismissAll(); // Dọn dẹp hết stack quay lại màn settings sạch sẽ
+        router.dismissAll();
         router.replace('/settings');
       } else {
         const err = await res.json();
         Alert.alert("Thất bại", err.detail || "Có lỗi từ hệ thống database Oracle.");
-        router.back(); // Nếu sai PIN gốc, đẩy quay ngược lại trang 1
+        router.back();
       }
     } catch (error) {
       Alert.alert("Lỗi mạng", "Không thể kết nối cập nhật dữ liệu.");

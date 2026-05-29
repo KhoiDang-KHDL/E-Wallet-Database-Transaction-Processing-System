@@ -1,11 +1,11 @@
 // src/app/(transaction)/my_qr.tsx
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import * as Sharing from 'expo-sharing'; // Thư viện share file của Expo
+import * as Sharing from 'expo-sharing'; 
 import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
-import ViewShot, { captureRef } from 'react-native-view-shot'; // Thư viện chụp ảnh view
+import ViewShot, { captureRef } from 'react-native-view-shot'; 
 import { Colors } from '../../constants/Colors';
 
 // Import cấu hình API và token xác thực
@@ -23,7 +23,7 @@ export default function MyQRScreen() {
   // Tạo Ref để trỏ vào vùng view cần chụp ảnh
   const viewShotRef = useRef<ViewShot>(null);
 
-  // 1. GỌI API THẬT ĐỂ LẤY THÔNG TIN USER TỪ ORACLE DB
+  // GỌI API THẬT ĐỂ LẤY THÔNG TIN USER TỪ ORACLE DB
   useEffect(() => {
     async function fetchUserInfo() {
       const token = getToken();
@@ -53,7 +53,7 @@ export default function MyQRScreen() {
   const baseLink = `https://ewallet.app/pay/${userPhone}`;
   const qrValue = amount ? `${baseLink}?amount=${amount}` : baseLink;
 
-  // Hàm định dạng số tiền hiển thị có dấu phẩy phân cách (Ví dụ: 50,000)
+  // Hàm định dạng số tiền hiển thị có dấu phẩy phân cách
   const formatCurrency = (val: string) => {
     if (!val) return '';
     return parseInt(val).toLocaleString('vi-VN');
@@ -127,7 +127,7 @@ export default function MyQRScreen() {
         
         {/* 2. Bọc vùng QR Card bằng ViewShot */}
         <ViewShot ref={viewShotRef} options={{ format: "png", quality: 1.0 }} style={styles.screenshotArea}>
-          {/* 3. MAIN QR CARD (Đổ dữ liệu sống từ Oracle DB) */}
+          {/* 3. MAIN QR CARD */}
           <View style={styles.qrCard}>
             <Text style={styles.userName}>{user?.full_name?.toUpperCase() || 'NGUỜI DÙNG E-WALLET'}</Text>
             <Text style={styles.userPhone}>{userPhone}</Text>
@@ -183,7 +183,7 @@ export default function MyQRScreen() {
           
           <View style={styles.divider} />
 
-          {/* 6. Nút Share gọi hàm chụp và share hình ảnh */}
+          {/* Nút Share gọi hàm chụp và share hình ảnh */}
           <TouchableOpacity style={[styles.groupButton, styles.rightButton]} onPress={captureQRAndShare}>
             <Ionicons name="share-social-outline" size={20} color={Colors.primary} />
             <Text style={styles.buttonText}>Chia sẻ</Text>
